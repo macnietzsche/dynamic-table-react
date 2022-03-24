@@ -1,6 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { DynamicTableProps, SortStatusType, TableDataType } from './types';
 import { DynamicTableLayout, CustomButton } from './DynamicTable.style';
+import {
+  AiOutlineSortAscending as SortAscendingIcon,
+  AiOutlineSortDescending as SortDescendingIcon,
+} from 'react-icons/ai';
 
 const DynamicTable: React.FC<DynamicTableProps> = ({ data }) => {
   const uniqueTitleHeaders = useMemo(() => {
@@ -25,14 +29,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data }) => {
   const handleSortRows = (columnKey: string) => {
     const newSortState = sortStatus[columnKey] * -1;
     const sortedData = data.sort((a, b) => {
-      let value = 0;
-      if (a[columnKey] > b[columnKey]) {
-        value = 1;
+      const valueA = a[columnKey] || '';
+      const valueB = b[columnKey] || '';
+
+      let result = 0;
+      if (valueA > valueB || 0) {
+        result = 1;
       }
-      if (a[columnKey] < b[columnKey]) {
-        value = -1;
+      if (valueA < valueB) {
+        result = -1;
       }
-      return value * newSortState;
+
+      return result * newSortState;
     });
     setTableData(sortedData);
     setSortStatus({ ...sortStatus, [columnKey]: newSortState });
@@ -45,7 +53,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data }) => {
           {uniqueTitleHeaders.map(title => (
             <th key={`title-header-${title}`}>
               <CustomButton onClick={() => handleSortRows(title)}>
-                {title}
+                <div className='flex items-center justify-center'>
+                  <span className='mr-2'>{title}</span>
+                  <div className='border-solid border-2 rounded-md'>
+                    {sortStatus[title] === 1 && <SortAscendingIcon size={20} />}
+                    {sortStatus[title] === -1 && (
+                      <SortDescendingIcon size={20} />
+                    )}
+                  </div>
+                </div>
               </CustomButton>
             </th>
           ))}
