@@ -33,7 +33,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ data }) => {
       const valueB = b[columnKey] || '';
 
       let result = 0;
-      if (valueA > valueB || 0) {
+      if (valueA > valueB) {
         result = 1;
       }
       if (valueA < valueB) {
